@@ -1,6 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.Json;
 using System;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.Json;
 
 namespace Otc.Extensions.Configuration
 {
@@ -10,7 +10,8 @@ namespace Otc.Extensions.Configuration
 
         public ObjectConfigurationSource(object configurationObject)
         {
-            this.configurationObject = configurationObject ?? throw new ArgumentNullException(nameof(configurationObject));
+            this.configurationObject = configurationObject ??
+                throw new ArgumentNullException(nameof(configurationObject));
         }
 
         public override IConfigurationProvider Build(IConfigurationBuilder builder)

@@ -1,13 +1,13 @@
-﻿using Microsoft.Extensions.Configuration;
-using Otc.ComponentModel.DataAnnotations;
-using Otc.Validations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Configuration;
+using Otc.ComponentModel.DataAnnotations;
+using Otc.Validations;
 
 namespace Otc.Extensions.Configuration
 {
-    public static class OtcConfigurationExtensions
+    public static class OtcConfigurationBinderExtensions
     {
         /// <summary>
         /// Le e valida configuracoes.
@@ -27,12 +27,13 @@ namespace Otc.Extensions.Configuration
         /// <returns>O objeto preenchido com os valores presentes nas configuracoes</returns>
         public static T SafeGet<T>(this IConfiguration configuration)
         {
+
             var typeName = typeof(T).Name;
 
             if (configuration.GetChildren().Any(item => item.Key == typeName))
             {
                 configuration = configuration.GetSection(typeName);
-            }          
+            }
 
             T model = configuration.Get<T>();
 
@@ -41,7 +42,7 @@ namespace Otc.Extensions.Configuration
                 throw new InvalidOperationException(
                     $"Item de configuracao nao encontrado para o tipo {typeof(T).FullName}.");
             }
-
+            
             if (!ModelValidator.TryValidate(model, out IEnumerable<ValidationResult> errors))
             {
                 string message = $"A validacao de configuracao para o tipo '{model.GetType().FullName}' falhou: " +

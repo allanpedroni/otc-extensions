@@ -1,8 +1,8 @@
-﻿using Microsoft.Extensions.Configuration.Json;
-using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Text;
+using System.Text.Json;
+using Microsoft.Extensions.Configuration.Json;
 
 namespace Otc.Extensions.Configuration
 {
@@ -10,17 +10,18 @@ namespace Otc.Extensions.Configuration
     {
         private readonly object configurationObject;
 
-        public ObjectConfigurationProvider(JsonConfigurationSource source, object configurationObject) : base(source)
+        public ObjectConfigurationProvider(JsonConfigurationSource source, object configurationObject)
+            : base(source)
         {
-            this.configurationObject = configurationObject ?? throw new ArgumentNullException(nameof(configurationObject));
+            this.configurationObject = configurationObject ??
+                throw new ArgumentNullException(nameof(configurationObject));
         }
 
         public override void Load()
         {
-            var serializedObject = JsonConvert.SerializeObject(configurationObject);
+            var serializedObject = JsonSerializer.Serialize(configurationObject);
             var byteArray = Encoding.ASCII.GetBytes(serializedObject);
-            var memoryStream = new MemoryStream(byteArray);
-
+            using var memoryStream = new MemoryStream(byteArray);
             Load(memoryStream);
         }
     }
